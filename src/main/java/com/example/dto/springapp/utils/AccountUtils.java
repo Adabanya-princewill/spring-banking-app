@@ -1,5 +1,7 @@
 package com.example.dto.springapp.utils;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import java.time.Year;
 
 public class AccountUtils {
@@ -28,5 +30,9 @@ public class AccountUtils {
         String year = String.valueOf(currentYear);
         String randomNumber = String.valueOf(randomSixDigits);
         return year.concat(randomNumber);
+    }
+
+    public static String getLoggedInUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

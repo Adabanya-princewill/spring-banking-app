@@ -33,6 +33,11 @@ public class SecurityConfig {
                                         "/access-token")
                                 .permitAll() // Allow access without authentication
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                                .requestMatchers(
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html"
+                                ).permitAll()
                                 .anyRequest().authenticated() // All other requests require authentication
                 ).userDetailsService(userDetailsServiceImp)
                 .sessionManagement(session -> session

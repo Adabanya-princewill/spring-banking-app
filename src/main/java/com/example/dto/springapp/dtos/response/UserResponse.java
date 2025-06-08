@@ -1,4 +1,4 @@
-package com.example.dto.springapp.dtos.responseDtos;
+package com.example.dto.springapp.dtos.response;
 
 
 import lombok.AllArgsConstructor;

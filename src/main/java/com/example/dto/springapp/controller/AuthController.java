@@ -4,7 +4,7 @@ import com.example.dto.springapp.dtos.request.LoginRequest;
 import com.example.dto.springapp.dtos.request.RefreshTokenRequest;
 import com.example.dto.springapp.dtos.request.UserRequest;
 import com.example.dto.springapp.dtos.response.BankResponse;
-import com.example.dto.springapp.dtos.responseDtos.AuthResponse;
+import com.example.dto.springapp.dtos.response.AuthResponse;
 import com.example.dto.springapp.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;

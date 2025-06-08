@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Login as ADMIN user and collect access token then
  * use Authorization header as a Bearer token for
  * any route under /admin/** api request. It will work fine.
- * But if Login with USER role then use that access token
- * this api will not work
+ * But if you Login with USER role then that access token
+ * won't work on this api.
  */
 @RestController
 @RequestMapping("/admin")

@@ -3,23 +3,25 @@ package com.example.dto.springapp.service.impl;
 import com.example.dto.springapp.dtos.request.*;
 import com.example.dto.springapp.dtos.response.AccountResponse;
 import com.example.dto.springapp.dtos.response.BankResponse;
-import com.example.dto.springapp.enums.Status;
 import com.example.dto.springapp.model.User;
 import com.example.dto.springapp.repository.UserRepository;
 import com.example.dto.springapp.service.EmailService;
+import com.example.dto.springapp.service.TransactionService;
 import com.example.dto.springapp.service.UserService;
 import com.example.dto.springapp.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private TransactionService transactionService;
 
     private final UserRepository userRepository;
     private final EmailService emailService;
@@ -108,6 +110,13 @@ public class UserServiceImpl implements UserService {
         if(user != null) {
             user.setAccountBalance(user.getAccountBalance().add(request.getAmount()));
             User creditedUser = userRepository.save(user);
+            //save transaction
+            TransactionRequest transaction = TransactionRequest.builder()
+                    .amount(request.getAmount())
+                    .transactionType("CREDIT")
+                    .accountNumber(creditedUser.getAccountNumber())
+                    .build();
+            transactionService.saveTransaction(transaction);
 
             return  BankResponse.builder()
                     .responseCode("00")
@@ -140,10 +149,18 @@ public class UserServiceImpl implements UserService {
         }
         User user = userRepository.findByAccountNumber(request.getAccountNumber());
         if(user != null) {
-            //check if the balance is sufficient
+            //check if the balance is enough
             if(user.getAccountBalance().compareTo(request.getAmount()) >= 0){
                 user.setAccountBalance(user.getAccountBalance().subtract(request.getAmount()));
                 User debitedUser = userRepository.save(user);
+
+                //save transaction
+                TransactionRequest transaction = TransactionRequest.builder()
+                        .amount(request.getAmount())
+                        .transactionType("DEBIT")
+                        .accountNumber(debitedUser.getAccountNumber())
+                        .build();
+                transactionService.saveTransaction(transaction);
 
                 return  BankResponse.builder()
                         .responseCode("00")
@@ -199,6 +216,14 @@ public class UserServiceImpl implements UserService {
 
                 userRecipient.setAccountBalance(userRecipient.getAccountBalance().add(request.getAmount()));
                 User creditedUser = userRepository.save(userRecipient);
+
+                //save transaction
+                TransactionRequest transaction = TransactionRequest.builder()
+                        .amount(request.getAmount())
+                        .transactionType("TRANSFER")
+                        .accountNumber(debitedUser.getAccountNumber())
+                        .build();
+                transactionService.saveTransaction(transaction);
 
                 return  BankResponse.builder()
                         .responseCode("00")
