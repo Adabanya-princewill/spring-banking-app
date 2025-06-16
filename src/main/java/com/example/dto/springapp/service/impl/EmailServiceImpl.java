@@ -54,7 +54,7 @@ public class EmailServiceImpl implements EmailService {
             FileSystemResource file = new FileSystemResource(new File(emailDetailsDto.getAttachment()));
             mimeMessageHelper.addAttachment(file.getFilename(), file);
 
-            javaMailSender.send(mimeMessage);
+            //javaMailSender.send(mimeMessage);
             System.out.println("mail sent!");
         } catch (MailException | MessagingException e) {
             throw new RuntimeException(e);

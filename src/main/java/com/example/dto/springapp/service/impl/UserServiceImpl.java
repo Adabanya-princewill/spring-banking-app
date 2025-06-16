@@ -9,9 +9,12 @@ import com.example.dto.springapp.service.EmailService;
 import com.example.dto.springapp.service.TransactionService;
 import com.example.dto.springapp.service.UserService;
 import com.example.dto.springapp.utils.AccountUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 
 @Service
@@ -97,7 +100,18 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+
+    private void saveTransaction(BigDecimal transAmount, String transType, String TransAcctNo) {
+        TransactionRequest transaction = TransactionRequest.builder()
+                .amount(transAmount)
+                .transactionType(transType)
+                .accountNumber(TransAcctNo)
+                .build();
+        transactionService.saveTransaction(transaction);
+    }
+
     @Override
+    @Transactional
     public BankResponse creditAccount(CreditDebitRequest request) {
         if(request.getAccountNumber().length() != 10){
             return BankResponse.builder()
@@ -111,12 +125,7 @@ public class UserServiceImpl implements UserService {
             user.setAccountBalance(user.getAccountBalance().add(request.getAmount()));
             User creditedUser = userRepository.save(user);
             //save transaction
-            TransactionRequest transaction = TransactionRequest.builder()
-                    .amount(request.getAmount())
-                    .transactionType("CREDIT")
-                    .accountNumber(creditedUser.getAccountNumber())
-                    .build();
-            transactionService.saveTransaction(transaction);
+            saveTransaction(request.getAmount(), "CREDIT", creditedUser.getAccountNumber());
 
             return  BankResponse.builder()
                     .responseCode("00")
@@ -155,12 +164,7 @@ public class UserServiceImpl implements UserService {
                 User debitedUser = userRepository.save(user);
 
                 //save transaction
-                TransactionRequest transaction = TransactionRequest.builder()
-                        .amount(request.getAmount())
-                        .transactionType("DEBIT")
-                        .accountNumber(debitedUser.getAccountNumber())
-                        .build();
-                transactionService.saveTransaction(transaction);
+                saveTransaction(request.getAmount(), "DEBIT", debitedUser.getAccountNumber());
 
                 return  BankResponse.builder()
                         .responseCode("00")
@@ -218,12 +222,7 @@ public class UserServiceImpl implements UserService {
                 User creditedUser = userRepository.save(userRecipient);
 
                 //save transaction
-                TransactionRequest transaction = TransactionRequest.builder()
-                        .amount(request.getAmount())
-                        .transactionType("TRANSFER")
-                        .accountNumber(debitedUser.getAccountNumber())
-                        .build();
-                transactionService.saveTransaction(transaction);
+                saveTransaction(request.getAmount(), "TRANSFER", debitedUser.getAccountNumber());
 
                 return  BankResponse.builder()
                         .responseCode("00")

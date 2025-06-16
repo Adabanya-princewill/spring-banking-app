@@ -44,7 +44,7 @@ public class TransactionServiceImpl implements TransactionService {
     public TransactionResponse getAllTransactions(String accountNumber) {
 
         log.info(AccountUtils.getLoggedInUser());
-        if (accountNumber.length() < 10) {
+        if (accountNumber.length() != 10) {
             return TransactionResponse.builder()
                     .responseCode("00")
                     .responseMessage("invalid account number")
@@ -79,14 +79,14 @@ public class TransactionServiceImpl implements TransactionService {
         }
         return TransactionResponse.builder()
                 .responseCode("001")
-                .responseMessage("transaction gotten successfully")
+                .responseMessage("transactions list gotten successfully")
                 .transResponse(response)
                 .build();
     }
 
     @Override
     public TransactionResponse getTransaction(String transId, String accountNumber) {
-        if (accountNumber.length() < 10) {
+        if (accountNumber.length() != 10) {
             return TransactionResponse.builder()
                     .responseCode("00")
                     .responseMessage("invalid account number")
@@ -96,15 +96,14 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction transaction = transactionRepository.findByTransactionId(transId);
 
-        if(transaction == null){
-            return TransactionResponse.builder()
-                    .responseCode("00")
-                    .responseMessage("invalid transaction id")
-                    .transResponse(null)
-                    .build();
+        if (transaction == null) {
+            return
+                    TransactionResponse.builder()
+                            .responseCode("00")
+                            .responseMessage("invalid transaction id")
+                            .transResponse(null)
+                            .build();
         }
-
-
 
         String loggedInUser = AccountUtils.getLoggedInUser();
 
@@ -112,7 +111,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         boolean isValid = user.getAccountNumber().equals(accountNumber);
 
-        if(isValid && (transaction.getAccountNumber().equals(user.getAccountNumber()))){
+        if (isValid && (transaction.getAccountNumber().equals(user.getAccountNumber()))) {
             return TransactionResponse.builder()
                     .responseCode("002")
                     .responseMessage("success")

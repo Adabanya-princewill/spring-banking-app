@@ -1,13 +1,10 @@
 package com.example.dto.springapp.controller;
 
-
 import com.example.dto.springapp.dtos.request.CreditDebitRequest;
 import com.example.dto.springapp.dtos.request.EnquiryRequest;
 import com.example.dto.springapp.dtos.request.TransferRequest;
-import com.example.dto.springapp.dtos.request.UserRequest;
 import com.example.dto.springapp.dtos.response.BankResponse;
 import com.example.dto.springapp.dtos.response.TransactionResponse;
-import com.example.dto.springapp.model.Transaction;
 import com.example.dto.springapp.service.BankStatement;
 import com.example.dto.springapp.service.TransactionService;
 import com.example.dto.springapp.service.UserService;
@@ -15,7 +12,6 @@ import com.itextpdf.text.DocumentException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
