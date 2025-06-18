@@ -29,8 +29,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/api/auth/login/**", "/api/auth/create-account", "/api/auth" +
-                                        "/access-token")
+                        req -> req.requestMatchers(
+                                "/api/auth/login/**",
+                                        "/api/auth/create-account",
+                                        "/api/auth/access-token")
                                 .permitAll() // Allow access without authentication
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated() // All other requests require authentication
